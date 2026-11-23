@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>APAC TA Employer Policy Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-2: #243044;
+      --border: #2d3a4f;
+      --text: #e8edf4;
+      --text-muted: #8b9cb3;
+      --accent: #0064d2;
+      --accent-light: #3d8bf0;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --radius: 10px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0a1628 0%, #1a2a44 50%, #0f1419 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem 1.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo-block h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-block h1 span { color: var(--accent-light); }
+
+    .logo-block p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .badge.live {
+      color: var(--green);
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .badge.live::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 3rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-card .sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .stat-card.warn .value { color: var(--amber); }
+    .stat-card.danger .value { color: var(--red); }
+    .stat-card.success .value { color: var(--green); }
+    .stat-card.info .value { color: var(--accent-light); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.65rem 1rem 0.65rem 2.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 100, 210, 0.2);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+    }
+
+    select, .tab-btn {
+      padding: 0.65rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    select:focus { outline: none; border-color: var(--accent); }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover { background: var(--surface-2); }
+
+    .tab-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .card-body { padding: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--surface-2);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    tr.hidden { display: none; }
+
+    .company-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .company-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .tag.layoff { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+    .tag.hiring { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+    .tag.expansion { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+    .tag.visa { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; }
+    .tag.comp { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+    .tag.peer { background: rgba(100, 116, 139, 0.2); color: #cbd5e1; }
+
+    .timeline { padding: 0.5rem 0; }
+
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .timeline-item:hover { background: rgba(255, 255, 255, 0.02); }
+    .timeline-item.hidden { display: none; }
+
+    .timeline-date {
+      flex-shrink: 0;
+      width: 72px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding-top: 0.15rem;
+    }
+
+    .timeline-content h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-content p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-tags { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+    .company-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+
+    .company-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      transition: border-color 0.15s;
+    }
+
+    .company-card:hover { border-color: var(--accent); }
+    .company-card.hidden { display: none; }
+
+    .company-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .company-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .company-card .sector {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .metric {
+      background: var(--surface-2);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+    }
+
+    .metric .m-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .metric .m-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.15rem;
+    }
+
+    .company-card .notes {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .visa-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .visa-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .visa-card.hidden { display: none; }
+
+    .visa-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .flag { font-size: 1.25rem; }
+
+    .visa-list {
+      list-style: none;
+      font-size: 0.825rem;
+    }
+
+    .visa-list li {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .visa-list li:last-child { border-bottom: none; }
+
+    .visa-list strong { color: var(--text); font-weight: 500; }
+
+    .comp-table-wrap { overflow-x: auto; max-height: 600px; overflow-y: auto; }
+
+    .trend-up { color: var(--green); }
+    .trend-down { color: var(--red); }
+    .trend-flat { color: var(--text-muted); }
+
+    .footer {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .legend span { display: flex; align-items: center; gap: 0.35rem; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <h1>APAC <span>TA Employer Policy</span> Monitor</h1>
+        <p>亚太区人才招聘 · 竞品雇主动态 · 签证 · 薪酬福利追踪</p>
+      </div>
+      <div class="header-meta">
+        <span class="badge live">Monitoring Active</span>
+        <span class="badge" id="lastUpdated">更新: 2026-09-08</span>
+        <span class="badge">覆盖 18 家对标公司</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats-grid" id="statsGrid">
+      <div class="stat-card danger">
+        <div class="label">近期裁员动态</div>
+        <div class="value" id="statLayoffs">6</div>
+        <div class="sub">过去 12 个月 · APAC 相关</div>
+      </div>
+      <div class="stat-card success">
+        <div class="label">APAC 扩张 / 新办公室</div>
+        <div class="value" id="statExpansion">9</div>
+        <div class="sub">含 Hub、Regional HQ</div>
+      </div>
+      <div class="stat-card info">
+        <div class="label">签证 Sponsorship 友好</div>
+        <div class="value" id="statVisa">11</div>
+        <div class="sub">主动提供工签支持</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="label">薪酬竞争力上调</div>
+        <div class="value" id="statComp">7</div>
+        <div class="sub">2025–2026 调薪 / RSU 调整</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">开放 TA 相关岗位</div>
+        <div class="value" id="statJobs">142</div>
+        <div class="sub">Engineering · Product · Ops</div>
+      </div>
+    </section>
+
+    <div class="legend">
+      <span><span class="tag peer">Peer</span> 同行业对标</span>
+      <span><span class="tag layoff">Layoff</span> 裁员</span>
+      <span><span class="tag expansion">Expansion</span> 扩张</span>
+      <span><span class="tag visa">Visa</span> 签证政策</span>
+      <span><span class="tag comp">Comp</span> 薪酬福利</span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="searchInput" placeholder="搜索公司、国家、关键词..." />
+      </div>
+      <select id="countryFilter">
+        <option value="">全部国家/地区</option>
+        <option value="SG">新加坡</option>
+        <option value="AU">澳大利亚</option>
+        <option value="JP">日本</option>
+        <option value="KR">韩国</option>
+        <option value="CN">中国大陆</option>
+        <option value="TW">台湾</option>
+        <option value="HK">香港</option>
+        <option value="IN">印度</option>
+        <option value="MY">马来西亚</option>
+        <option value="ID">印尼</option>
+        <option value="VN">越南</option>
+        <option value="PH">菲律宾</option>
+      </select>
+      <select id="categoryFilter">
+        <option value="">全部类别</option>
+        <option value="layoff">裁员</option>
+        <option value="expansion">扩张</option>
+        <option value="visa">签证</option>
+        <option value="comp">薪酬福利</option>
+        <option value="hiring">招聘</option>
+      </select>
+    </div>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="overview">总览动态</button>
+      <button class="tab-btn" data-tab="companies">公司档案</button>
+      <button class="tab-btn" data-tab="visa">签证政策</button>
+      <button class="tab-btn" data-tab="compensation">薪酬对标</button>
+      <button class="tab-btn" data-tab="matrix">竞品矩阵</button>
+    </nav>
+
+    <!-- Overview Panel -->
+    <section class="panel active" id="panel-overview">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h2>最新雇主动态</h2>
+            <span class="badge">按时间排序</span>
+          </div>
+          <div class="card-body timeline" id="timeline"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h2>APAC 热点市场</h2>
+          </div>
+          <div class="card-body" style="padding: 1.25rem;">
+            <div class="metric-row">
+              <div class="metric"><div class="m-label">新加坡</div><div class="m-value">Tech Hub · 签证友好</div></div>
+              <div class="metric"><div class="m-label">悉尼 / 墨尔本</div><div class="m-value">Engineering 集中</div></div>
+            </div>
+            <div class="metric-row">
+              <div class="metric"><div class="m-label">东京 / 大阪</div><div class="m-value">本地化 + 跨境</div></div>
+              <div class="metric"><div class="m-label">首尔</div><div class="m-value">电商 / Fintech 活跃</div></div>
+            </div>
+            <div class="metric-row">
+              <div class="metric"><div class="m-label">班加罗尔</div><div class="m-value">Engineering 成本优势</div></div>
+              <div class="metric"><div class="m-label">雅加达 / 吉隆坡</div><div class="m-value">SEA 增长市场</div></div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">
+              与 eBay 人才池高度重叠：Marketplace、Payments、Trust & Safety、Search/Relevance、Seller Experience 等职能。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Companies Panel -->
+    <section class="panel" id="panel-companies">
+      <div class="company-cards" id="companyCards"></div>
+    </section>
+
+    <!-- Visa Panel -->
+    <section class="panel" id="panel-visa">
+      <div class="visa-grid" id="visaGrid"></div>
+    </section>
+
+    <!-- Compensation Panel -->
+    <section class="panel" id="panel-compensation">
+      <div class="card">
+        <div class="card-header">
+          <h2>APAC 薪酬福利对标（Senior IC / Manager 级别 · 示意数据）</h2>
+          <span class="badge">USD 等值 · 年度 Total Comp</span>
+        </div>
+        <div class="card-body comp-table-wrap">
+          <table id="compTable">
+            <thead>
+              <tr>
+                <th>公司</th>
+                <th>市场</th>
+                <th>角色类型</th>
+                <th>Base (USD)</th>
+                <th>Bonus</th>
+                <th>Equity/RSU</th>
+                <th>Total Comp</th>
+                <th>趋势</th>
+                <th>福利亮点</th>
+              </tr>
+            </thead>
+            <tbody id="compTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Matrix Panel -->
+    <section class="panel" id="panel-matrix">
+      <div class="card">
+        <div class="card-header">
+          <h2>竞品 / 人才相通公司矩阵</h2>
+        </div>
+        <div class="card-body comp-table-wrap">
+          <table id="matrixTable">
+            <thead>
+              <tr>
+                <th>公司</th>
+                <th>与 eBay 关系</th>
+                <th>APAC 重点市场</th>
+                <th>近期动态</th>
+                <th>签证友好度</th>
+                <th>薪酬竞争力</th>
+                <th>TA 优先级</th>
+              </tr>
+            </thead>
+            <tbody id="matrixBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>APAC Talent Acquisition · Internal Use · 数据为示意，请结合官方来源核实</span>
+    <span>建议数据源：公司 IR、LinkedIn、Glassdoor、各国移民局、TechCrunch / Reuters</span>
+  </footer>
+
+  <script>
+    const COMPANIES = [
+      { id: "ebay", name: "eBay", sector: "Marketplace / E-commerce", color: "#0064d2", relation: "基准", markets: ["SG", "AU", "JP", "CN"], visa: "高", comp: "中上", taPriority: "—" },
+      { id: "amazon", name: "Amazon", sector: "E-commerce / Cloud", color: "#ff9900", relation: "直接竞品", markets: ["SG", "AU", "IN", "JP"], visa: "高", comp: "高", taPriority: "高" },
+      { id: "shopee", name: "Shopee (Sea)", sector: "SEA Marketplace", color: "#ee4d2d", relation: "区域竞品", markets: ["SG", "ID", "MY", "VN", "PH", "TW"], visa: "中", comp: "中高", taPriority: "高" },
+      { id: "lazada", name: "Lazada (Alibaba)", sector: "SEA E-commerce", color: "#0f146d", relation: "区域竞品", markets: ["SG", "ID", "MY", "TH", "VN"], visa: "中", comp: "中", taPriority: "中" },
+      { id: "alibaba", name: "Alibaba", sector: "E-commerce / Cloud", color: "#ff6a00", relation: "生态竞品", markets: ["CN", "SG", "HK"], visa: "低*", comp: "中高", taPriority: "中" },
+      { id: "rakuten", name: "Rakuten", sector: "Marketplace / Fintech", color: "#bf0000", relation: "亚太对标", markets: ["JP", "SG", "TW"], visa: "中", comp: "中", taPriority: "中" },
+      { id: "mercari", name: "Mercari", sector: "C2C Marketplace", color: "#ff0211", relation: "模式对标", markets: ["JP", "US"], visa: "低", comp: "中", taPriority: "低" },
+      { id: "coupang", name: "Coupang", sector: "E-commerce / Logistics", color: "#0074e9", relation: "亚太对标", markets: ["KR", "TW"], visa: "中", comp: "高", taPriority: "中" },
+      { id: "paypal", name: "PayPal", sector: "Payments", color: "#003087", relation: "Payments 竞品", markets: ["SG", "AU", "IN", "CN"], visa: "高", comp: "高", taPriority: "高" },
+      { id: "stripe", name: "Stripe", sector: "Payments / Fintech", color: "#635bff", relation: "Payments 竞品", markets: ["SG", "AU", "JP"], visa: "高", comp: "很高", taPriority: "高" },
+      { id: "google", name: "Google", sector: "Tech / Ads", color: "#4285f4", relation: "人才竞争", markets: ["SG", "AU", "IN", "JP", "TW"], visa: "高", comp: "很高", taPriority: "高" },
+      { id: "meta", name: "Meta", sector: "Social / Ads", color: "#0668E1", relation: "人才竞争", markets: ["SG", "AU", "IN"], visa: "高", comp: "很高", taPriority: "高" },
+      { id: "microsoft", name: "Microsoft", sector: "Cloud / Enterprise", color: "#00a4ef", relation: "人才竞争", markets: ["SG", "AU", "IN", "JP", "KR"], visa: "高", comp: "很高", taPriority: "高" },
+      { id: "tiktok", name: "TikTok / ByteDance", sector: "Social / E-commerce", color: "#fe2c55", relation: "Commerce 交叉", markets: ["SG", "AU", "JP", "MY", "ID"], visa: "中", comp: "高", taPriority: "高" },
+      { id: "jd", name: "JD.com", sector: "E-commerce / Logistics", color: "#e1251b", relation: "生态竞品", markets: ["CN", "SG"], visa: "低*", comp: "中", taPriority: "低" },
+      { id: "etsy", name: "Etsy", sector: "Marketplace", color: "#f56400", relation: "模式对标", markets: ["SG", "AU"], visa: "高", comp: "中高", taPriority: "中" },
+      { id: "airbnb", name: "Airbnb", sector: "Marketplace / Travel", color: "#ff5a5f", relation: "Marketplace 对标", markets: ["SG", "AU", "IN"], visa: "高", comp: "高", taPriority: "中" },
+      { id: "grab", name: "Grab", sector: "Super App", color: "#00b14f", relation: "SEA 生态", markets: ["SG", "MY", "ID", "PH", "VN", "TH"], visa: "中", comp: "中高", taPriority: "中" }
+    ];
+
+    const UPDATES = [
+      { date: "2026-08", company: "Shopee", countries: ["SG", "ID"], tags: ["layoff", "comp"], title: "Shopee 继续优化区域团队规模", desc: "据报道 SEA Group 在 2026 年继续精简非核心职能，Engineering 部分团队受影响，同时保留电商与 Fintech 核心岗位。新加坡 Hub 仍维持 Tech 招聘。", relation: "区域竞品" },
+      { date: "2026-07", company: "Stripe", countries: ["SG"], tags: ["expansion", "hiring", "visa"], title: "Stripe 扩大新加坡 Engineering Hub", desc: "新增 Payments Infrastructure 与 Risk 团队编制，对 EP/ONE Pass 候选人友好，Relocation 包含签证与临时住宿。", relation: "Payments 竞品" },
+      { date: "2026-07", company: "Amazon", countries: ["AU", "IN"], tags: ["layoff", "hiring"], title: "Amazon APAC 结构性调整", desc: "AWS 与 Retail 部分团队裁员，同时 AU/SG 加大 AI/ML 与 Last-mile 物流招聘，印度 Bangalore 持续扩编。", relation: "直接竞品" },
+      { date: "2026-06", company: "TikTok", countries: ["SG", "MY"], tags: ["expansion", "visa", "comp"], title: "TikTok Shop APAC 团队扩张", desc: "吉隆坡与新加坡增设 Seller Ops 与 Trust & Safety 岗位，提供 Employment Pass 支持，Total Comp 上调约 8–12%。", relation: "Commerce 交叉" },
+      { date: "2026-06", company: "PayPal", countries: ["SG", "IN"], tags: ["comp", "hiring"], title: "PayPal APAC 薪酬 band 调整", desc: "2026 FY 起 SG/AU Senior IC band 上调 5–7%，增强 RSU refresh；Bangalore 竞争加剧。", relation: "Payments 竞品" },
+      { date: "2026-05", company: "Rakuten", countries: ["JP"], tags: ["layoff", "expansion"], title: "Rakuten 重组 Mobile / Fintech", desc: "移动业务裁员约数百人，同时将资源转向 Fintech 与 Marketplace AI，东京办公室维持 Hybrid 3/2。", relation: "亚太对标" },
+      { date: "2026-05", company: "Google", countries: ["SG", "IN"], tags: ["hiring", "visa", "comp"], title: "Google APAC Cloud & Search 持续招聘", desc: "Singapore 作为 Regional Hub，Tech 签证配额稳定；India 大规模 Campus + Lateral 招聘，Total Comp 领先市场。", relation: "人才竞争" },
+      { date: "2026-04", company: "Lazada", countries: ["SG", "ID"], tags: ["layoff", "hiring"], title: "Lazada 精简中层管理", desc: "Alibaba 生态整合后减少 duplicate roles，保留 Logistics 与 Seller Tools Engineering 招聘。", relation: "区域竞品" },
+      { date: "2026-04", company: "Coupang", countries: ["KR", "TW"], tags: ["expansion", "comp"], title: "Coupang 台湾物流中心扩建", desc: "台北周边新建 Fulfillment Center，Engineering 与 Ops 同步扩招，韩籍外派 + 本地 hire 并行。", relation: "亚太对标" },
+      { date: "2026-03", company: "Meta", countries: ["SG"], tags: ["hiring", "visa"], title: "Meta SG Reality Labs & Infra 小幅回暖", desc: "2026 Q1 起部分 APAC Infra 岗位 reopen，EP sponsorship 恢复至 2023 年前约 70% 水平。", relation: "人才竞争" },
+      { date: "2026-03", company: "eBay", countries: ["SG", "AU"], tags: ["comp", "hiring"], title: "eBay APAC 2026 薪酬 review 完成", desc: "SG/AU Engineering & Product band 微调 +3–5%，强调 Seller Experience 与 GenAI 相关岗位。", relation: "基准" },
+      { date: "2026-02", company: "Alibaba", countries: ["SG"], tags: ["expansion", "visa"], title: "Alibaba Cloud 国际总部（SG）扩编", desc: "Cloud 国际业务在新加坡持续招人，外籍候选人需满足 MOM 配额，Sponsorship  case-by-case。", relation: "生态竞品" },
+      { date: "2026-01", company: "Microsoft", countries: ["AU", "IN", "JP"], tags: ["layoff", "hiring", "comp"], title: "Microsoft FY26 初 APAC 微调", desc: "部分 Sales/Support 岗位优化，Azure & Security Engineering 在 AU/IN 扩招，RSU 政策维持 competitive。", relation: "人才竞争" },
+      { date: "2025-12", company: "Grab", countries: ["SG", "MY"], tags: ["comp", "hiring"], title: "Grab 2026 福利包升级", desc: "增加 mental health、co-working stipend；Engineering 总包 SG 市场 +6%，与 Shopee/GoTo 竞争加剧。", relation: "SEA 生态" },
+      { date: "2025-11", company: "Etsy", countries: ["AU"], tags: ["expansion", "hiring"], title: "Etsy 悉尼小型 Engineering 卫星办公室", desc: "Remote-first 为主，悉尼 hub 侧重 Trust & Safety 与 Search，支持 TSS 482 签证（澳洲）。", relation: "模式对标" }
+    ];
+
+    const COMPANY_PROFILES = [
+      { company: "Amazon", markets: ["SG", "AU", "IN"], layoff: "2026 部分 AWS/Retail 裁员", expansion: "SG AI Lab、IN Bangalore 扩编", visa: "EP/482/H1B 路径成熟，Relocation 标准包", salary: "Senior SDE SG: $180–250K TC", benefits: "16 weeks parental, ESPP, comprehensive medical", notes: "与 eBay 在 Marketplace、Payments、Logistics 人才高度重叠" },
+      { company: "Shopee", markets: ["SG", "ID", "MY"], layoff: "2025–2026 多轮 optimization", expansion: "ID/Jakarta Tech 中心维持", visa: "SG EP 配额收紧时 case-by-case", salary: "Senior Eng SG: $120–180K TC", benefits: "SEA 区域 medical, shuttle (部分 office)", notes: "SEA 最大 regional 竞品，抢 Seller/Marketplace 人才" },
+      { company: "PayPal", markets: ["SG", "IN", "AU"], layoff: "2025 全球小幅精简", expansion: "SG Risk & Compliance 扩编", visa: "积极 sponsor EP / 482", salary: "Senior Eng SG: $160–220K TC", benefits: "Flexible PTO, RSU, wellness stipend", notes: "Payments 职能直接挖 eBay/PayPal 背景候选人" },
+      { company: "Stripe", markets: ["SG", "AU"], layoff: "极少", expansion: "SG Hub 持续扩大", visa: "ONE Pass / EP 友好，法务支持完善", salary: "Senior Eng SG: $200–280K TC", benefits: "Top-tier equity, remote-friendly, learning budget", notes: "Fintech 薪酬天花板，抢 Senior Backend/Risk 人才" },
+      { company: "Google", markets: ["SG", "IN", "AU"], layoff: "2024–2025 已消化大部分", expansion: "IN 大规模 hiring", visa: "SG/IN 配额充足", salary: "Senior Eng SG: $220–320K TC", benefits: "Industry-leading perks, sabbatical options", notes: "Search/Ads/ML 人才与 eBay Search/Relevance 交叉" },
+      { company: "TikTok", markets: ["SG", "MY", "AU"], layoff: "2025 部分 non-core", expansion: "TikTok Shop APAC 快速扩张", visa: "SG EP 支持，政策敏感需合规 review", salary: "Senior Eng SG: $150–210K TC", benefits: "Competitive bonus, hybrid work", notes: "Commerce + Content 交叉，抢 Ops/Product 人才" },
+      { company: "Rakuten", markets: ["JP", "SG"], layoff: "2026 Mobile 业务裁员", expansion: "Fintech/Marketplace AI 投资", visa: "日本 Engineer/Specialist 签证路径", salary: "Senior Eng Tokyo: ¥12–18M 总包", benefits: "Rakuten  ecosystem 折扣, 标准社保", notes: "日本市场本地化人才为主" },
+      { company: "eBay", markets: ["SG", "AU", "JP"], layoff: "无大规模", expansion: "GenAI/Seller Tools 投入", visa: "EP/482 标准支持", salary: "Senior Eng SG: $140–190K TC", benefits: "Hybrid, ESPP, global mobility", notes: "基准雇主，关注竞品挖角 Seller Experience 团队" }
+    ];
+
+    const VISA_POLICIES = [
+      { country: "新加坡", flag: "🇸🇬", code: "SG", items: [
+        { company: "Stripe / Google / MS", policy: "Employment Pass，ONE Pass 高端人才通道" },
+        { company: "Shopee / Lazada", policy: "EP 配额有限，Senior 及以上优先" },
+        { company: "eBay / PayPal", policy: "标准 EP sponsorship，Relocation 支持" }
+      ]},
+      { country: "澳大利亚", flag: "🇦🇺", code: "AU", items: [
+        { company: "Amazon / Google", policy: "482 TSS → 186 PR 路径常见" },
+        { company: "eBay / Etsy", policy: "482 sponsorship，Remote-hybrid 友好" },
+        { company: "Meta", policy: "482 case-by-case，Senior 优先" }
+      ]},
+      { country: "日本", flag: "🇯🇵", code: "JP", items: [
+        { company: "Rakuten / Mercari", policy: "Engineer/Specialist 在留资格" },
+        { company: "Google / Amazon JP", policy: "高度人才积分制加速 PR" },
+        { company: "eBay JP", policy: "本地化 hire 为主，外籍 case-by-case" }
+      ]},
+      { country: "韩国", flag: "🇰🇷", code: "KR", items: [
+        { company: "Coupang", policy: "E-7 签证，外派 + 本地并行" },
+        { company: "Microsoft KR", policy: "E-7/E-3，Relocation 支持" },
+        { company: "Amazon", policy: "有限 sponsorship" }
+      ]},
+      { country: "印度", flag: "🇮🇳", code: "IN", items: [
+        { company: "Amazon / Google / MS", policy: "本地 hire 为主，无外籍 visa 需求" },
+        { company: "PayPal / Stripe", policy: "Bangalore/Hyd GCC 扩编" },
+        { company: "eBay", policy: "Vendor/GCC 合作模式为主" }
+      ]},
+      { country: "印尼 / 马来西亚", flag: "🇮🇩🇲🇾", code: "ID", items: [
+        { company: "Shopee / Lazada / Grab", policy: "KITAS / Employment Pass (MY)" },
+        { company: "TikTok", policy: "Regional role 支持 work permit" },
+        { company: "ByteDance", policy: "本地化 compliance 严格" }
+      ]}
+    ];
+
+    const COMP_DATA = [
+      { company: "Stripe", market: "SG", role: "Senior Backend Eng", base: 140, bonus: "10%", equity: 80, total: 230, trend: "up", benefits: "Top equity, WFH stipend" },
+      { company: "Google", market: "SG", role: "Senior SWE", base: 130, bonus: "15%", equity: 100, total: 280, trend: "up", benefits: "Full perks package" },
+      { company: "Amazon", market: "SG", role: "SDE III", base: 120, bonus: "Sign-on", equity: 60, total: 210, trend: "flat", benefits: "ESPP, parental 16w" },
+      { company: "PayPal", market: "SG", role: "Senior Eng", base: 110, bonus: "12%", equity: 45, total: 185, trend: "up", benefits: "Flexible PTO" },
+      { company: "Shopee", market: "SG", role: "Senior Eng", base: 95, bonus: "2–4 mo", equity: 30, total: 155, trend: "flat", benefits: "Medical, shuttle" },
+      { company: "eBay", market: "SG", role: "Senior Eng", base: 100, bonus: "10%", equity: 35, total: 165, trend: "up", benefits: "Hybrid, ESPP" },
+      { company: "TikTok", market: "SG", role: "Senior Eng", base: 105, bonus: "3–6 mo", equity: 40, total: 175, trend: "up", benefits: "Hybrid" },
+      { company: "Meta", market: "SG", role: "E5 Eng", base: 125, bonus: "10%", equity: 90, total: 260, trend: "up", benefits: "Premium medical" },
+      { company: "Microsoft", market: "AU", role: "Senior SDE", base: 115, bonus: "10–20%", equity: 55, total: 195, trend: "flat", benefits: "ESPP, leave buyout" },
+      { company: "Rakuten", market: "JP", role: "Senior Eng", base: 85, bonus: "2 mo", equity: 15, total: 110, trend: "flat", benefits: "Standard JP benefits" },
+      { company: "Coupang", market: "KR", role: "Senior Eng", base: 90, bonus: "Performance", equity: 50, total: 180, trend: "up", benefits: "Coupang perks" },
+      { company: "Amazon", market: "IN", role: "SDE III", base: 45, bonus: "Sign-on", equity: 35, total: 95, trend: "up", benefits: "ESPP" },
+      { company: "Google", market: "IN", role: "Senior SWE", base: 55, bonus: "15%", equity: 45, total: 115, trend: "up", benefits: "Full perks" },
+      { company: "Etsy", market: "AU", role: "Senior Eng", base: 105, bonus: "10%", equity: 40, total: 170, trend: "flat", benefits: "Remote-first" }
+    ];
+
+    const MARKET_NAMES = { SG: "新加坡", AU: "澳大利亚", JP: "日本", KR: "韩国", CN: "中国大陆", TW: "台湾", HK: "香港", IN: "印度", MY: "马来西亚", ID: "印尼", VN: "越南", PH: "菲律宾" };
+
+    function getCompanyColor(name) {
+      const c = COMPANIES.find(x => x.name === name || name.startsWith(x.name));
+      return c ? c.color : "#64748b";
+    }
+
+    function getInitials(name) {
+      return name.split(/[\s(/]+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    }
+
+    function renderTimeline(filter = {}) {
+      const el = document.getElementById("timeline");
+      const q = (filter.q || "").toLowerCase();
+      const country = filter.country || "";
+      const category = filter.category || "";
+
+      el.innerHTML = UPDATES.map(u => {
+        const matchQ = !q || [u.company, u.title, u.desc, u.relation].join(" ").toLowerCase().includes(q);
+        const matchC = !country || u.countries.includes(country);
+        const matchCat = !category || u.tags.includes(category);
+        const hidden = !(matchQ && matchC && matchCat) ? "hidden" : "";
+        const tags = u.tags.map(t => `<span class="tag ${t}">${t}</span>`).join("");
+        return `
+          <article class="timeline-item ${hidden}" data-countries="${u.countries.join(",")}" data-tags="${u.tags.join(",")}">
+            <time class="timeline-date">${u.date}</time>
+            <div class="timeline-content">
+              <h3>${u.company} · ${u.title}</h3>
+              <p>${u.desc}</p>
+              <div class="timeline-tags">${tags}<span class="tag peer">${u.relation}</span></div>
+            </div>
+          </article>`;
+      }).join("");
+    }
+
+    function renderCompanyCards(filter = {}) {
+      const el = document.getElementById("companyCards");
+      const q = (filter.q || "").toLowerCase();
+      const country = filter.country || "";
+
+      el.innerHTML = COMPANY_PROFILES.map(p => {
+        const matchQ = !q || JSON.stringify(p).toLowerCase().includes(q);
+        const matchC = !country || p.markets.includes(country);
+        const hidden = !(matchQ && matchC) ? "hidden" : "";
+        const color = getCompanyColor(p.company);
+        return `
+          <div class="company-card ${hidden}" data-markets="${p.markets.join(",")}">
+            <div class="company-card-top">
+              <div class="company-cell">
+                <div class="company-avatar" style="background:${color}22;color:${color}">${getInitials(p.company)}</div>
+                <div><h3>${p.company}</h3><div class="sector">${p.markets.map(m => MARKET_NAMES[m] || m).join(" · ")}</div></div>
+              </div>
+            </div>
+            <div class="metric-row">
+              <div class="metric"><div class="m-label">裁员</div><div class="m-value">${p.layoff}</div></div>
+              <div class="metric"><div class="m-label">扩张</div><div class="m-value">${p.expansion}</div></div>
+            </div>
+            <div class="metric-row">
+              <div class="metric"><div class="m-label">签证</div><div class="m-value">${p.visa}</div></div>
+              <div class="metric"><div class="m-label">薪酬</div><div class="m-value">${p.salary}</div></div>
+            </div>
+            <div class="notes"><strong>福利：</strong>${p.benefits}<br><br>${p.notes}</div>
+          </div>`;
+      }).join("");
+    }
+
+    function renderVisa(filter = {}) {
+      const el = document.getElementById("visaGrid");
+      const q = (filter.q || "").toLowerCase();
+      const country = filter.country || "";
+
+      el.innerHTML = VISA_POLICIES.map(v => {
+        const matchC = !country || v.code === country || (country === "MY" && v.code === "ID") || (country === "VN" && v.code === "ID") || (country === "PH" && v.code === "ID");
+        const matchQ = !q || JSON.stringify(v).toLowerCase().includes(q);
+        const hidden = !(matchC && matchQ) ? "hidden" : "";
+        return `
+          <div class="visa-card ${hidden}">
+            <h3><span class="flag">${v.flag}</span> ${v.country}</h3>
+            <ul class="visa-list">
+              ${v.items.map(i => `<li><strong>${i.company}</strong> — ${i.policy}</li>`).join("")}
+            </ul>
+          </div>`;
+      }).join("");
+    }
+
+    function renderCompTable(filter = {}) {
+      const tbody = document.getElementById("compTableBody");
+      const q = (filter.q || "").toLowerCase();
+      const country = filter.country || "";
+
+      tbody.innerHTML = COMP_DATA.map(r => {
+        const matchQ = !q || JSON.stringify(r).toLowerCase().includes(q);
+        const matchC = !country || r.market === country;
+        const hidden = !(matchQ && matchC) ? "hidden" : "";
+        const trendClass = r.trend === "up" ? "trend-up" : r.trend === "down" ? "trend-down" : "trend-flat";
+        const trendIcon = r.trend === "up" ? "↑" : r.trend === "down" ? "↓" : "→";
+        const color = getCompanyColor(r.company);
+        return `
+          <tr class="${hidden}">
+            <td><div class="company-cell"><div class="company-avatar" style="background:${color}22;color:${color}">${getInitials(r.company)}</div>${r.company}</div></td>
+            <td>${MARKET_NAMES[r.market] || r.market}</td>
+            <td>${r.role}</td>
+            <td>$${r.base}K</td>
+            <td>${r.bonus}</td>
+            <td>$${r.equity}K/yr</td>
+            <td><strong>$${r.total}K</strong></td>
+            <td class="${trendClass}">${trendIcon}</td>
+            <td>${r.benefits}</td>
+          </tr>`;
+      }).join("");
+    }
+
+    function renderMatrix(filter = {}) {
+      const tbody = document.getElementById("matrixBody");
+      const q = (filter.q || "").toLowerCase();
+      const country = filter.country || "";
+
+      tbody.innerHTML = COMPANIES.map(c => {
+        const recent = UPDATES.find(u => u.company === c.name || u.company.startsWith(c.name.split(" ")[0]));
+        const recentText = recent ? recent.title.slice(0, 40) + "…" : "—";
+        const matchQ = !q || JSON.stringify(c).toLowerCase().includes(q) || (recent && recent.title.toLowerCase().includes(q));
+        const matchC = !country || c.markets.includes(country);
+        const hidden = !(matchQ && matchC) ? "hidden" : "";
+        const color = c.color;
+        return `
+          <tr class="${hidden}">
+            <td><div class="company-cell"><div class="company-avatar" style="background:${color}22;color:${color}">${getInitials(c.name)}</div>${c.name}</div></td>
+            <td><span class="tag peer">${c.relation}</span></td>
+            <td>${c.markets.map(m => MARKET_NAMES[m] || m).join(", ")}</td>
+            <td style="max-width:220px;font-size:0.8rem;color:var(--text-muted)">${recentText}</td>
+            <td>${c.visa}</td>
+            <td>${c.comp}</td>
+            <td>${c.taPriority}</td>
+          </tr>`;
+      }).join("");
+    }
+
+    function getFilter() {
+      return {
+        q: document.getElementById("searchInput").value.trim(),
+        country: document.getElementById("countryFilter").value,
+        category: document.getElementById("categoryFilter").value
+      };
+    }
+
+    function applyFilters() {
+      const f = getFilter();
+      renderTimeline(f);
+      renderCompanyCards(f);
+      renderVisa(f);
+      renderCompTable(f);
+      renderMatrix(f);
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    ["searchInput", "countryFilter", "categoryFilter"].forEach(id => {
+      document.getElementById(id).addEventListener("input", applyFilters);
+      document.getElementById(id).addEventListener("change", applyFilters);
+    });
+
+    applyFilters();
+  </script>
+</body>
+</html>
