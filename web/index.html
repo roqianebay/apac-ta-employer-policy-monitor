@@ -497,19 +497,30 @@
     }
 
     .legend span { display: flex; align-items: center; gap: 0.35rem; }
+    .lang-switch { display: flex; gap: 4px; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: var(--surface-2); }
+    .lang-switch button { border: 0; background: transparent; color: var(--text-muted); font: inherit; font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: 999px; cursor: pointer; }
+    .lang-switch button.active { background: var(--accent); color: #fff; font-weight: 600; }
+    .hub-footer { margin-top: 0.5rem; font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .hub-footer a { color: var(--accent-light); }
   </style>
+  <script src="js/monitor-lang.js"></script>
+  <script src="js/monitor-i18n-overlay.js"></script>
 </head>
 <body>
   <header class="header">
     <div class="header-inner">
       <div class="logo-block">
         <h1>APAC <span>Talent Employer Policy</span> Monitor</h1>
-        <p>亚太区人才招聘 · 竞品雇主动态 · 签证 · 薪酬福利追踪</p>
+        <p id="ui-subtitle">亚太区人才招聘 · 竞品雇主动态 · 签证 · 薪酬福利追踪</p>
       </div>
       <div class="header-meta">
-        <span class="badge live">Monitoring Active</span>
+        <div class="lang-switch" role="group" id="lang-switch" aria-label="Language">
+          <button type="button" data-lang="zh" class="active">中文</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <span class="badge live" id="ui-live">Monitoring Active</span>
         <span class="badge" id="lastUpdated">更新: 2026-09-08</span>
-        <span class="badge">覆盖 18 家对标公司</span>
+        <span class="badge" id="ui-badge-peers">覆盖 18 家对标公司</span>
       </div>
     </div>
   </header>
@@ -517,38 +528,38 @@
   <main class="container">
     <section class="stats-grid" id="statsGrid">
       <div class="stat-card danger">
-        <div class="label">近期裁员动态</div>
+        <div class="label" id="ui-stat-layoffs-label">近期裁员动态</div>
         <div class="value" id="statLayoffs">6</div>
-        <div class="sub">过去 12 个月 · APAC 相关</div>
+        <div class="sub" id="ui-stat-layoffs-sub">过去 12 个月 · APAC 相关</div>
       </div>
       <div class="stat-card success">
-        <div class="label">APAC 扩张 / 新办公室</div>
+        <div class="label" id="ui-stat-expansion-label">APAC 扩张 / 新办公室</div>
         <div class="value" id="statExpansion">9</div>
-        <div class="sub">含 Hub、Regional HQ</div>
+        <div class="sub" id="ui-stat-expansion-sub">含 Hub、Regional HQ</div>
       </div>
       <div class="stat-card info">
-        <div class="label">签证 Sponsorship 友好</div>
+        <div class="label" id="ui-stat-visa-label">签证 Sponsorship 友好</div>
         <div class="value" id="statVisa">11</div>
-        <div class="sub">主动提供工签支持</div>
+        <div class="sub" id="ui-stat-visa-sub">主动提供工签支持</div>
       </div>
       <div class="stat-card warn">
-        <div class="label">薪酬竞争力上调</div>
+        <div class="label" id="ui-stat-comp-label">薪酬竞争力上调</div>
         <div class="value" id="statComp">7</div>
-        <div class="sub">2025–2026 调薪 / RSU 调整</div>
+        <div class="sub" id="ui-stat-comp-sub">2025–2026 调薪 / RSU 调整</div>
       </div>
       <div class="stat-card">
-        <div class="label">开放 TA 相关岗位</div>
+        <div class="label" id="ui-stat-jobs-label">开放 TA 相关岗位</div>
         <div class="value" id="statJobs">142</div>
-        <div class="sub">Engineering · Product · Ops</div>
+        <div class="sub" id="ui-stat-jobs-sub">Engineering · Product · Ops</div>
       </div>
     </section>
 
     <div class="legend">
-      <span><span class="tag peer">Peer</span> 同行业对标</span>
-      <span><span class="tag layoff">Layoff</span> 裁员</span>
-      <span><span class="tag expansion">Expansion</span> 扩张</span>
-      <span><span class="tag visa">Visa</span> 签证政策</span>
-      <span><span class="tag comp">Comp</span> 薪酬福利</span>
+      <span><span class="tag peer">Peer</span> <span id="ui-legend-peer">同行业对标</span></span>
+      <span><span class="tag layoff">Layoff</span> <span id="ui-legend-layoff">裁员</span></span>
+      <span><span class="tag expansion">Expansion</span> <span id="ui-legend-expansion">扩张</span></span>
+      <span><span class="tag visa">Visa</span> <span id="ui-legend-visa">签证政策</span></span>
+      <span><span class="tag comp">Comp</span> <span id="ui-legend-comp">薪酬福利</span></span>
     </div>
 
     <div class="toolbar">
@@ -582,11 +593,11 @@
     </div>
 
     <nav class="tabs" role="tablist">
-      <button class="tab-btn active" data-tab="overview">总览动态</button>
-      <button class="tab-btn" data-tab="companies">公司档案</button>
-      <button class="tab-btn" data-tab="visa">签证政策</button>
-      <button class="tab-btn" data-tab="compensation">薪酬对标</button>
-      <button class="tab-btn" data-tab="matrix">竞品矩阵</button>
+      <button class="tab-btn active" data-tab="overview" id="ui-tab-overview">总览动态</button>
+      <button class="tab-btn" data-tab="companies" id="ui-tab-companies">公司档案</button>
+      <button class="tab-btn" data-tab="visa" id="ui-tab-visa">签证政策</button>
+      <button class="tab-btn" data-tab="compensation" id="ui-tab-compensation">薪酬对标</button>
+      <button class="tab-btn" data-tab="matrix" id="ui-tab-matrix">竞品矩阵</button>
     </nav>
 
     <!-- Overview Panel -->
@@ -594,14 +605,14 @@
       <div class="grid-2">
         <div class="card">
           <div class="card-header">
-            <h2>最新雇主动态</h2>
-            <span class="badge">按时间排序</span>
+            <h2 id="ui-latest-updates">最新雇主动态</h2>
+            <span class="badge" id="ui-sorted-time">按时间排序</span>
           </div>
           <div class="card-body timeline" id="timeline"></div>
         </div>
         <div class="card">
           <div class="card-header">
-            <h2>APAC 热点市场</h2>
+            <h2 id="ui-hot-markets">APAC 热点市场</h2>
           </div>
           <div class="card-body" style="padding: 1.25rem;">
             <div class="metric-row">
@@ -638,22 +649,22 @@
     <section class="panel" id="panel-compensation">
       <div class="card">
         <div class="card-header">
-          <h2>APAC 薪酬福利对标（Senior IC / Manager 级别 · 示意数据）</h2>
-          <span class="badge">USD 等值 · 年度 Total Comp</span>
+          <h2 id="ui-comp-title">APAC 薪酬福利对标（Senior IC / Manager 级别 · 示意数据）</h2>
+          <span class="badge" id="ui-comp-badge">USD 等值 · 年度 Total Comp</span>
         </div>
         <div class="card-body comp-table-wrap">
           <table id="compTable">
             <thead>
               <tr>
-                <th>公司</th>
-                <th>市场</th>
-                <th>角色类型</th>
-                <th>Base (USD)</th>
-                <th>Bonus</th>
-                <th>Equity/RSU</th>
-                <th>Total Comp</th>
-                <th>趋势</th>
-                <th>福利亮点</th>
+                <th id="thComp0">公司</th>
+                <th id="thComp1">市场</th>
+                <th id="thComp2">角色类型</th>
+                <th id="thComp3">Base (USD)</th>
+                <th id="thComp4">Bonus</th>
+                <th id="thComp5">Equity/RSU</th>
+                <th id="thComp6">Total Comp</th>
+                <th id="thComp7">趋势</th>
+                <th id="thComp8">福利亮点</th>
               </tr>
             </thead>
             <tbody id="compTableBody"></tbody>
@@ -666,19 +677,19 @@
     <section class="panel" id="panel-matrix">
       <div class="card">
         <div class="card-header">
-          <h2>竞品 / 人才相通公司矩阵</h2>
+          <h2 id="ui-matrix-title">竞品 / 人才相通公司矩阵</h2>
         </div>
         <div class="card-body comp-table-wrap">
           <table id="matrixTable">
             <thead>
               <tr>
-                <th>公司</th>
-                <th>与 eBay 关系</th>
-                <th>APAC 重点市场</th>
-                <th>近期动态</th>
-                <th>签证友好度</th>
-                <th>薪酬竞争力</th>
-                <th>TA 优先级</th>
+                <th id="thMx0">公司</th>
+                <th id="thMx1">与 eBay 关系</th>
+                <th id="thMx2">APAC 重点市场</th>
+                <th id="thMx3">近期动态</th>
+                <th id="thMx4">签证友好度</th>
+                <th id="thMx5">薪酬竞争力</th>
+                <th id="thMx6">TA 优先级</th>
               </tr>
             </thead>
             <tbody id="matrixBody"></tbody>
@@ -689,8 +700,13 @@
   </main>
 
   <footer class="footer">
-    <span>APAC Talent Acquisition · Internal Use · 数据为示意，请结合官方来源核实</span>
-    <span>建议数据源：公司 IR、LinkedIn、Glassdoor、各国移民局、TechCrunch / Reuters</span>
+    <span id="ui-footer-note">APAC Talent Acquisition · Internal Use · 数据为示意，请结合官方来源核实</span>
+    <span id="ui-footer-sources">建议数据源：公司 IR、LinkedIn、Glassdoor、各国移民局、TechCrunch / Reuters</span>
+    <div class="hub-footer">
+      <a href="https://roqianebay.github.io/apac-labor-hr-practice/" id="ui-hub-labor">Labor &amp; HR Guide</a>
+      <a href="https://roqianebay.github.io/apac-ta-employer-monitor/" id="ui-hub-er">ER News V2.0</a>
+      <a href="https://roqianebay.github.io/apac-policy-monitor/" id="ui-hub-gov">Gov Policy Monitor</a>
+    </div>
   </footer>
 
   <script>
@@ -715,7 +731,7 @@
       { id: "grab", name: "Grab", sector: "Super App", color: "#00b14f", relation: "SEA 生态", markets: ["SG", "MY", "ID", "PH", "VN", "TH"], visa: "中", comp: "中高", taPriority: "中" }
     ];
 
-    const UPDATES = [
+    window.UPDATES = [
       { date: "2026-08", company: "Shopee", countries: ["SG", "ID"], tags: ["layoff", "comp"], title: "Shopee 继续优化区域团队规模", desc: "据报道 SEA Group 在 2026 年继续精简非核心职能，Engineering 部分团队受影响，同时保留电商与 Fintech 核心岗位。新加坡 Hub 仍维持 Tech 招聘。", relation: "区域竞品" },
       { date: "2026-07", company: "Stripe", countries: ["SG"], tags: ["expansion", "hiring", "visa"], title: "Stripe 扩大新加坡 Engineering Hub", desc: "新增 Payments Infrastructure 与 Risk 团队编制，对 EP/ONE Pass 候选人友好，Relocation 包含签证与临时住宿。", relation: "Payments 竞品" },
       { date: "2026-07", company: "Amazon", countries: ["AU", "IN"], tags: ["layoff", "hiring"], title: "Amazon APAC 结构性调整", desc: "AWS 与 Retail 部分团队裁员，同时 AU/SG 加大 AI/ML 与 Last-mile 物流招聘，印度 Bangalore 持续扩编。", relation: "直接竞品" },
@@ -732,6 +748,7 @@
       { date: "2025-12", company: "Grab", countries: ["SG", "MY"], tags: ["comp", "hiring"], title: "Grab 2026 福利包升级", desc: "增加 mental health、co-working stipend；Engineering 总包 SG 市场 +6%，与 Shopee/GoTo 竞争加剧。", relation: "SEA 生态" },
       { date: "2025-11", company: "Etsy", countries: ["AU"], tags: ["expansion", "hiring"], title: "Etsy 悉尼小型 Engineering 卫星办公室", desc: "Remote-first 为主，悉尼 hub 侧重 Trust & Safety 与 Search，支持 TSS 482 签证（澳洲）。", relation: "模式对标" }
     ];
+    if (window.__applyMonitorEn) window.__applyMonitorEn();
 
     const COMPANY_PROFILES = [
       { company: "Amazon", markets: ["SG", "AU", "IN"], layoff: "2026 部分 AWS/Retail 裁员", expansion: "SG AI Lab、IN Bangalore 扩编", visa: "EP/482/H1B 路径成熟，Relocation 标准包", salary: "Senior SDE SG: $180–250K TC", benefits: "16 weeks parental, ESPP, comprehensive medical", notes: "与 eBay 在 Marketplace、Payments、Logistics 人才高度重叠" },
@@ -806,30 +823,35 @@
     }
 
     function renderTimeline(filter = {}) {
+      const ML = window.MonitorLang;
       const el = document.getElementById("timeline");
       const q = (filter.q || "").toLowerCase();
       const country = filter.country || "";
       const category = filter.category || "";
 
-      el.innerHTML = UPDATES.map(u => {
+      el.innerHTML = window.UPDATES.map(u => {
         const matchQ = !q || [u.company, u.title, u.desc, u.relation].join(" ").toLowerCase().includes(q);
         const matchC = !country || u.countries.includes(country);
         const matchCat = !category || u.tags.includes(category);
         const hidden = !(matchQ && matchC && matchCat) ? "hidden" : "";
-        const tags = u.tags.map(t => `<span class="tag ${t}">${t}</span>`).join("");
+        const tags = u.tags.map(t => `<span class="tag ${t}">${ML ? ML.tagLabel(t) : t}</span>`).join("");
+        const title = ML ? ML.itemField(u, "title") : u.title;
+        const desc = ML ? ML.itemField(u, "desc") : u.desc;
+        const rel = ML ? ML.itemField(u, "relation") : u.relation;
         return `
           <article class="timeline-item ${hidden}" data-countries="${u.countries.join(",")}" data-tags="${u.tags.join(",")}">
             <time class="timeline-date">${u.date}</time>
             <div class="timeline-content">
-              <h3>${u.company} · ${u.title}</h3>
-              <p>${u.desc}</p>
-              <div class="timeline-tags">${tags}<span class="tag peer">${u.relation}</span></div>
+              <h3>${u.company} · ${title}</h3>
+              <p>${desc}</p>
+              <div class="timeline-tags">${tags}<span class="tag peer">${rel}</span></div>
             </div>
           </article>`;
       }).join("");
     }
 
     function renderCompanyCards(filter = {}) {
+      const ML = window.MonitorLang;
       const el = document.getElementById("companyCards");
       const q = (filter.q || "").toLowerCase();
       const country = filter.country || "";
@@ -844,18 +866,18 @@
             <div class="company-card-top">
               <div class="company-cell">
                 <div class="company-avatar" style="background:${color}22;color:${color}">${getInitials(p.company)}</div>
-                <div><h3>${p.company}</h3><div class="sector">${p.markets.map(m => MARKET_NAMES[m] || m).join(" · ")}</div></div>
+                <div><h3>${p.company}</h3><div class="sector">${p.markets.map(m => (ML ? ML.marketName(m) : MARKET_NAMES[m]) || m).join(" · ")}</div></div>
               </div>
             </div>
             <div class="metric-row">
-              <div class="metric"><div class="m-label">裁员</div><div class="m-value">${p.layoff}</div></div>
-              <div class="metric"><div class="m-label">扩张</div><div class="m-value">${p.expansion}</div></div>
+              <div class="metric"><div class="m-label">${ML ? ML.t(ML.UI.mLayoff) : "裁员"}</div><div class="m-value">${p.layoff}</div></div>
+              <div class="metric"><div class="m-label">${ML ? ML.t(ML.UI.mExpansion) : "扩张"}</div><div class="m-value">${p.expansion}</div></div>
             </div>
             <div class="metric-row">
-              <div class="metric"><div class="m-label">签证</div><div class="m-value">${p.visa}</div></div>
-              <div class="metric"><div class="m-label">薪酬</div><div class="m-value">${p.salary}</div></div>
+              <div class="metric"><div class="m-label">${ML ? ML.t(ML.UI.mVisa) : "签证"}</div><div class="m-value">${p.visa}</div></div>
+              <div class="metric"><div class="m-label">${ML ? ML.t(ML.UI.mSalary) : "薪酬"}</div><div class="m-value">${p.salary}</div></div>
             </div>
-            <div class="notes"><strong>福利：</strong>${p.benefits}<br><br>${p.notes}</div>
+            <div class="notes"><strong>${ML ? ML.t(ML.UI.mBenefits) : "福利"}：</strong>${p.benefits}<br><br>${p.notes}</div>
           </div>`;
       }).join("");
     }
@@ -880,6 +902,7 @@
     }
 
     function renderCompTable(filter = {}) {
+      const ML = window.MonitorLang;
       const tbody = document.getElementById("compTableBody");
       const q = (filter.q || "").toLowerCase();
       const country = filter.country || "";
@@ -894,7 +917,7 @@
         return `
           <tr class="${hidden}">
             <td><div class="company-cell"><div class="company-avatar" style="background:${color}22;color:${color}">${getInitials(r.company)}</div>${r.company}</div></td>
-            <td>${MARKET_NAMES[r.market] || r.market}</td>
+            <td>${ML ? ML.marketName(r.market) : MARKET_NAMES[r.market] || r.market}</td>
             <td>${r.role}</td>
             <td>$${r.base}K</td>
             <td>${r.bonus}</td>
@@ -907,22 +930,25 @@
     }
 
     function renderMatrix(filter = {}) {
+      const ML = window.MonitorLang;
       const tbody = document.getElementById("matrixBody");
       const q = (filter.q || "").toLowerCase();
       const country = filter.country || "";
 
       tbody.innerHTML = COMPANIES.map(c => {
-        const recent = UPDATES.find(u => u.company === c.name || u.company.startsWith(c.name.split(" ")[0]));
-        const recentText = recent ? recent.title.slice(0, 40) + "…" : "—";
+        const recent = window.UPDATES.find(u => u.company === c.name || u.company.startsWith(c.name.split(" ")[0]));
+        const recentTitle = recent ? (ML ? ML.itemField(recent, "title") : recent.title) : "";
+        const recentText = recentTitle ? recentTitle.slice(0, 40) + "…" : "—";
         const matchQ = !q || JSON.stringify(c).toLowerCase().includes(q) || (recent && recent.title.toLowerCase().includes(q));
         const matchC = !country || c.markets.includes(country);
         const hidden = !(matchQ && matchC) ? "hidden" : "";
         const color = c.color;
+        const rel = ML ? ML.relationLabel(c.relation) : c.relation;
         return `
           <tr class="${hidden}">
             <td><div class="company-cell"><div class="company-avatar" style="background:${color}22;color:${color}">${getInitials(c.name)}</div>${c.name}</div></td>
-            <td><span class="tag peer">${c.relation}</span></td>
-            <td>${c.markets.map(m => MARKET_NAMES[m] || m).join(", ")}</td>
+            <td><span class="tag peer">${rel}</span></td>
+            <td>${c.markets.map(m => (window.MonitorLang ? window.MonitorLang.marketName(m) : MARKET_NAMES[m]) || m).join(", ")}</td>
             <td style="max-width:220px;font-size:0.8rem;color:var(--text-muted)">${recentText}</td>
             <td>${c.visa}</td>
             <td>${c.comp}</td>
@@ -947,6 +973,7 @@
       renderCompTable(f);
       renderMatrix(f);
     }
+    window.applyFilters = applyFilters;
 
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -962,7 +989,7 @@
       document.getElementById(id).addEventListener("change", applyFilters);
     });
 
-    applyFilters();
+    if (window.MonitorLang) MonitorLang.init();
   </script>
 </body>
 </html>
