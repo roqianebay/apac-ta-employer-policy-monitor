@@ -49,7 +49,8 @@
     mBenefits: L("福利", "Benefits"),
     footerNote: L("APAC Talent Acquisition · 内部参考 · 数据为示意，请结合官方来源核实", "APAC talent acquisition · internal · illustrative data — verify sources"),
     footer: L("仅供内部人才情报参考 · 数据为人工整理", "Internal TA intelligence · manually curated"),
-    hubLabor: L("劳动法办案指南", "Labor & HR practice guide"),
+    hubIndex: L("看板总索引", "Dashboard index"),
+    hubLabor: L("流程与劳动法", "Process & labor law"),
     hubErNews: L("ER News V2.0", "ER News V2.0"),
     hubGov: L("政府政策 Monitor", "Gov policy monitor"),
     footerSources: L("建议数据源：公司 IR、LinkedIn、Glassdoor、各国移民局、TechCrunch / Reuters", "Sources: company IR, LinkedIn, Glassdoor, immigration sites, TechCrunch / Reuters"),
@@ -179,6 +180,7 @@
     setText("ui-hot-markets", t(UI.hotMarkets));
     setText("ui-footer-note", t(UI.footerNote));
     setText("ui-footer-sources", t(UI.footerSources));
+    setText("ui-hub-index", t(UI.hubIndex));
     setText("ui-hub-labor", t(UI.hubLabor));
     setText("ui-hub-er", t(UI.hubErNews));
     setText("ui-hub-gov", t(UI.hubGov));
