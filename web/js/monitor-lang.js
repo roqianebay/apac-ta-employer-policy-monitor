@@ -66,7 +66,7 @@
     rolesBadge: L("Senior IC / Manager", "Senior IC / Manager"),
     footerNote: L("APAC Talent Intel V3 · 内部 TA 参考 · 不含裁员情报", "APAC Talent Intel V3 · internal TA use · no layoff intel"),
     footerSources: L("数据源：LinkedIn、公司 careers、Levels.fyi、猎聘/BOSS（示意）", "Sources: LinkedIn, careers pages, Levels.fyi, local job boards (illustrative)"),
-    hubIndex: L("看板总索引", "Dashboard index"),
+    hubIndex: L("APAC People Policy Dictionary", "APAC People Policy Dictionary"),
     hubLabor: L("流程与劳动法", "Process & labor law"),
     hubErNews: L("ER News V2.0（裁员）", "ER News V2.0 (layoffs)"),
     hubGov: L("政府政策 Monitor", "Gov policy monitor"),
