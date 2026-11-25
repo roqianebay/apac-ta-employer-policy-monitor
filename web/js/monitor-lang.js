@@ -12,8 +12,8 @@
       "APAC internet & e-commerce talent intel · <strong>hiring & open roles</strong> · China market · comp benchmarks · peer matrix (layoffs on ER News V2.0)"
     ),
     intro: L(
-      "<strong>定位：</strong>本看板只追踪<strong>招聘、扩招、薪酬 band、签证友好度</strong>等 TA 侧情报；<strong>裁员、RIF、补偿</strong>请使用 <a href=\"https://roqianebay.github.io/apac-ta-employer-monitor/\" style=\"color:var(--accent-light)\">APAC ER News V2.0</a>。数据为人工整理的示意索引，非官方招聘承诺；入职前请核对 JD 与 Offer。",
-      "<strong>Scope:</strong> This board tracks <strong>hiring, expansion, comp bands, visa</strong> only. <strong>Layoffs/RIF/severance</strong> → <a href=\"https://roqianebay.github.io/apac-ta-employer-monitor/\" style=\"color:var(--accent-light)\">APAC ER News V2.0</a>. Curated illustrative intel — verify JDs and offers."
+      "<strong>定位：</strong>本看板只追踪<strong>招聘、扩招、薪酬 band、签证友好度</strong>等 TA 侧情报；<strong>裁员、RIF、补偿</strong>请使用 <a href=\"https://roqianebay.github.io/apac-ta-employer-monitor/\" style=\"color:var(--accent-light)\">APAC ER News Update</a>。数据为人工整理的示意索引，非官方招聘承诺；入职前请核对 JD 与 Offer。",
+      "<strong>Scope:</strong> This board tracks <strong>hiring, expansion, comp bands, visa</strong> only. <strong>Layoffs/RIF/severance</strong> → <a href=\"https://roqianebay.github.io/apac-ta-employer-monitor/\" style=\"color:var(--accent-light)\">APAC ER News Update</a>. Curated illustrative intel — verify JDs and offers."
     ),
     live: L("Hiring Intel", "Hiring Intel"),
     updated: L("数据快照", "Snapshot"),
